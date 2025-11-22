@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "http://localhost:5173"
+      }
+    ]
+  }
+}
