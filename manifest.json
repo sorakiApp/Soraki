@@ -1,0 +1,21 @@
+{
+  "name": "Soraki Study Buddy",
+  "short_name": "Soraki",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF9F2",
+  "theme_color": "#FFF9F2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/resources/soraki.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/resources/soraki.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+
+PASTA DE RECURSOS (RESOURCES)
+
+Para mudar a mascote do app Soraki:
+
+1. Pegue sua imagem (de preferência com fundo transparente).
+2. Renomeie o arquivo para "soraki.png" (tudo minúsculo).
+3. Cole o arquivo dentro desta pasta.
+
+O código já está configurado para buscar "/resources/soraki.png" automaticamente.
+Se o arquivo não estiver aqui, o app usará a versão digital padrão.

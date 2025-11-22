@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Soraki Study Buddy</title>
+    
+    <!-- PWA Setup -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FFF9F2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Soraki">
+    <link rel="apple-touch-icon" href="/resources/soraki.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans"', 'sans-serif'],
+            },
+            colors: {
+              soraki: {
+                bg: 'rgb(var(--color-bg) / <alpha-value>)',
+                card: 'rgb(var(--color-card) / <alpha-value>)',
+                primary: 'rgb(var(--color-primary) / <alpha-value>)',
+                primaryLight: 'rgb(var(--color-primary-light) / <alpha-value>)',
+                primaryDark: 'rgb(var(--color-primary-dark) / <alpha-value>)',
+                secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+                neutral: 'rgb(var(--color-neutral) / <alpha-value>)',
+                text: 'rgb(var(--color-text) / <alpha-value>)',
+                textLight: 'rgb(var(--color-text-light) / <alpha-value>)',
+                surface: 'rgb(var(--color-surface) / <alpha-value>)',
+                accent: 'rgb(var(--color-accent) / <alpha-value>)'
+              }
+            },
+            boxShadow: {
+              'soft': '0 8px 30px -4px rgba(var(--color-primary-dark), 0.15)', 
+              'card': '0 4px 12px -2px rgba(0, 0, 0, 0.08)',
+              'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.03)',
+              'float': '0 10px 40px -10px rgba(var(--color-primary-dark), 0.2)'
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'float': 'float 3s ease-in-out infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      :root {
+        --color-bg: 255 249 242; /* #FFF9F2 */
+        --color-card: 255 255 255; /* #FFFFFF */
+        --color-primary: 167 216 255; /* #A7D8FF */
+        --color-primary-light: 214 237 255; /* #D6EDFF */
+        --color-primary-dark: 58 124 180; /* #3A7CB4 */
+        --color-secondary: 123 188 235; /* #7BBCEB */
+        --color-neutral: 229 229 229; /* #E5E5E5 */
+        --color-text: 95 111 130; /* #5F6F82 */
+        --color-text-light: 148 163 184; /* #94A3B8 */
+        --color-surface: 247 252 255; /* #F7FCFF */
+        --color-accent: 255 209 102; /* #FFD166 */
+      }
+      
+      .dark {
+        --color-bg: 15 23 42; /* Slate 900 */
+        --color-card: 30 41 59; /* Slate 800 */
+        --color-primary: 56 189 248; /* Sky 400 */
+        --color-primary-light: 51 65 85; /* Slate 700 */
+        --color-primary-dark: 224 242 254; /* Sky 100 (Text) */
+        --color-secondary: 14 165 233; /* Sky 500 */
+        --color-neutral: 51 65 85; /* Slate 700 */
+        --color-text: 203 213 225; /* Slate 300 */
+        --color-text-light: 148 163 184; /* Slate 400 */
+        --color-surface: 30 41 59; /* Slate 800 */
+        --color-accent: 251 191 36; /* Amber 400 */
+      }
+
+      body {
+        background-color: rgb(var(--color-bg));
+        color: rgb(var(--color-text));
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      /* Hide scrollbar for clean look */
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
