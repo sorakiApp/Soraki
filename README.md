@@ -38,21 +38,6 @@ Desde a interface até o mascote, tudo foi pensado para transmitir suavidade.
 
 ---
 
-### ⭐ Pontos Internos (Estrelas de Constância)
-- Totalmente offline  
-- Servem apenas para itens cosméticos  
-- Zero monetização interna  
-
----
-
-### 🎨 Loja Interna (Cosméticos)
-- Temas de interface  
-- Skins do Soraki  
-- Wallpapers  
-- Badges  
-
----
-
 ### 🛍️ Loja Externa (Cakto)
 Produtos digitais pagos (PDFs, e-books, pacotes e mini-cursos)  
 **Totalmente separados do app.**
