@@ -15,7 +15,11 @@ const Shop: React.FC<ShopProps> = ({ stats, updateStats, userProfile }) => {
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-soraki-primaryDark">Loja</h2>
-        <p className="text-soraki-textLight text-sm">recursos especiais para você, {userProfile.name} ✨</p>
+        <div className="text-soraki-textLight text-sm mt-4 max-w-sm mx-auto flex flex-col gap-4">
+            <p>🌤 Apoie o projeto e leve um pedacinho da Soraki com você</p>
+            <p>Cada produto da lojinha ajuda a manter o app vivo, gentil e sempre evoluindo.<br/>Se você acredita na proposta de estudar com leveza, constância e calma… essa é a melhor forma de apoiar.</p>
+            <p>🛍 Visite nossa lojinha e dê um boost no Soraki<br/>(Com amor e um pouquinho de fofura sempre 💛)</p>
+        </div>
       </div>
 
       {/* External Shop */}
