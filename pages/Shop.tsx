@@ -21,7 +21,7 @@ const Shop: React.FC<ShopProps> = ({ stats, updateStats, userProfile }) => {
       {/* External Shop */}
       <div 
         className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-lg cursor-pointer transform hover:scale-[1.02] active:scale-[0.98] transition-transform"
-        onClick={() => window.open('https://cakto.com.br', '_blank')}
+        onClick={() => window.open('https://soraki-catalogo.vercel.app/', '_blank')}
       >
         <div className="relative z-10 flex flex-col items-center text-center gap-4">
              <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold inline-block text-white uppercase tracking-widest">
