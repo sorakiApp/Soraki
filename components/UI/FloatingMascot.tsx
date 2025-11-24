@@ -18,7 +18,7 @@ const FloatingMascot: React.FC = () => {
       {positions.map((pos, i) => (
         <img
           key={i}
-          src="/resources/2.png"
+          src="resources/2.png"
           className="absolute w-24 h-24 animate-float opacity-50"
           style={{
             top: pos.top,

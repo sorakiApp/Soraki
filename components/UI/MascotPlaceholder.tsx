@@ -15,9 +15,7 @@ const MascotPlaceholder: React.FC<MascotProps> = ({ mood = 'happy', size = 'md',
     xl: 'w-48 h-48'
   };
 
-  // Relative path to the resources folder from components/UI/
-  // This ensures it looks up two levels to root, then into resources
-  const imageSrc = '../../resources/soraki.png';
+  const imageSrc = 'resources/soraki.png';
 
   return (
     <div className={`relative rounded-full overflow-hidden border-4 border-white dark:border-soraki-card flex-shrink-0 mx-auto ${sizeClasses[size]} ${className}`}>
