@@ -1,39 +1,27 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Card from '../components/UI/Card';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
 import { Calendar, Flame, CheckCircle2, ArrowRight } from 'lucide-react';
-import { UserStats, Task, UserProfile } from '../types';
+import { UserProfile } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../contexts/dataContext';
+import { 하루 } from '../utils/time';
 
 interface HomeProps {
-  stats: UserStats;
   userProfile: UserProfile;
 }
 
-const Home: React.FC<HomeProps> = ({ stats, userProfile }) => {
+const Home: React.FC<HomeProps> = ({ userProfile }) => {
   const navigate = useNavigate();
-  const [progress, setProgress] = useState(0);
-  const [todayTasks, setTodayTasks] = useState<{total: number, completed: number}>({total: 0, completed: 0});
+  const { tasks, streak } = useData();
 
-  // Calculate Progress based on actual tasks
-  useEffect(() => {
-    const savedTasksStr = localStorage.getItem('soraki-tasks');
-    if (savedTasksStr) {
-      const tasks: Task[] = JSON.parse(savedTasksStr);
-      
-      // Create Local Date String YYYY-MM-DD to match Planner
-      const date = new Date();
-      const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      
-      const todaysTasks = tasks.filter(t => t.date === today);
-      const total = todaysTasks.length;
-      const completed = todaysTasks.filter(t => t.completed).length;
-      
-      setTodayTasks({ total, completed });
-      setProgress(total === 0 ? 0 : Math.round((completed / total) * 100));
-    }
-  }, []);
+  // Calculate Progress based on tasks from context
+  const todayStr = 하루.today();
+  const todaysTasks = tasks.filter(t => t.date === todayStr);
+  const total = todaysTasks.length;
+  const completed = todaysTasks.filter(t => t.completed).length;
+  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
 
   const today = new Date();
   const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
@@ -87,7 +75,7 @@ const Home: React.FC<HomeProps> = ({ stats, userProfile }) => {
              <span className="text-sm text-soraki-text font-semibold">Sequência atual</span>
           </div>
           <div className="text-right">
-             <span className="text-2xl text-orange-500 font-bold block leading-none">{stats.streak}</span>
+             <span className="text-2xl text-orange-500 font-bold block leading-none">{streak}</span>
              <span className="text-xs text-orange-300">dias seguidos</span>
           </div>
         </Card>
@@ -117,9 +105,9 @@ const Home: React.FC<HomeProps> = ({ stats, userProfile }) => {
                 ></div>
             </div>
             <p className="text-xs text-center text-soraki-textLight mt-2">
-                {todayTasks.total === 0 
+                {total === 0 
                     ? "Nenhuma tarefa para hoje ainda" 
-                    : `${todayTasks.completed} de ${todayTasks.total} tarefas concluídas`
+                    : `${completed} de ${total} tarefas concluídas`
                 }
             </p>
         </div>

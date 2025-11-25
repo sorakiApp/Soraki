@@ -1,15 +1,8 @@
 
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
-import { UserStats, UserProfile } from '../types';
 
-interface ShopProps {
-    stats: UserStats;
-    updateStats: (newStats: Partial<UserStats>) => void;
-    userProfile: UserProfile;
-}
-
-const Shop: React.FC<ShopProps> = ({ stats, updateStats, userProfile }) => {
+const Shop: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 animate-fade-in pb-24 h-full justify-center">
       {/* Header */}

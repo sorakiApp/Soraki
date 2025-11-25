@@ -10,7 +10,7 @@ import Reviews from './pages/Reviews';
 import Shop from './pages/Shop';
 import Profile from './pages/Profile';
 import Onboarding from './components/Onboarding/Onboarding';
-import { UserStats, UserProfile } from './types';
+import { UserProfile } from './types';
 import FloatingMascot from './components/UI/FloatingMascot';
 import { DataProvider } from './contexts/dataContext';
 
@@ -24,7 +24,7 @@ const AnimatedRoutes: React.FC<any> = ({ userProfile, isDarkMode, toggleTheme, r
         <Route path="/planner" element={<Planner />} />
         <Route path="/focus" element={<Focus userProfile={userProfile} />} />
         <Route path="/reviews" element={<Reviews />} />
-        <Route path="/shop" element={<Shop userProfile={userProfile} />} />
+        <Route path="/shop" element={<Shop />} />
         <Route path="/profile" element={
             <Profile 
                 userProfile={userProfile}

@@ -7,6 +7,8 @@ interface DataContextProps {
   tasks: Task[];
   reviews: ReviewItem[];
   streak: number;
+  totalHours: number;
+  sessions: number;
   addTask: (title: string, subject: string, priority: Priority) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
@@ -15,6 +17,7 @@ interface DataContextProps {
   addReview: (title: string) => void;
   deleteReview: (id: string) => void;
   updateReview: (id: string, newReview: ReviewItem) => void;
+  addFocusSession: (durationInMinutes: number) => void;
 }
 
 const DataContext = createContext<DataContextProps | undefined>(undefined);
@@ -23,6 +26,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [tasks, setTasks] = useState<Task[]>([]);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [streak, setStreak] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);
+  const [sessions, setSessions] = useState(0);
 
   useEffect(() => {
     try {
@@ -34,12 +39,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const stats = localStorage.getItem('soraki-stats');
       if (stats) {
-        const { streak, lastCompletionDay } = JSON.parse(stats);
-        if (하루.isYesterday(lastCompletionDay) || 하루.isToday(lastCompletionDay)) {
-          setStreak(streak);
+        const parsedStats = JSON.parse(stats);
+        if (하루.isYesterday(parsedStats.lastCompletionDay) || 하루.isToday(parsedStats.lastCompletionDay)) {
+          setStreak(parsedStats.streak || 0);
         } else {
           setStreak(0);
         }
+        setTotalHours(parsedStats.totalHours || 0);
+        setSessions(parsedStats.sessions || 0);
       }
     } catch (error) {
       console.error("Failed to load data from localStorage", error);
@@ -66,9 +73,24 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (lastCompletionDay !== todayStr) {
         const newStreak = 하루.isYesterday(lastCompletionDay) ? (stats.streak || 0) + 1 : 1;
         setStreak(newStreak);
-        localStorage.setItem('soraki-stats', JSON.stringify({ streak: newStreak, lastCompletionDay: todayStr }));
+        localStorage.setItem('soraki-stats', JSON.stringify({ ...stats, streak: newStreak, lastCompletionDay: todayStr }));
       }
     }
+  };
+
+  const addFocusSession = (durationInMinutes: number) => {
+    const newTotalHours = totalHours + durationInMinutes / 60;
+    const newSessions = sessions + 1;
+    setTotalHours(newTotalHours);
+    setSessions(newSessions);
+
+    const stats = JSON.parse(localStorage.getItem('soraki-stats') || '{}');
+    localStorage.setItem('soraki-stats', JSON.stringify({
+        ...stats,
+        totalHours: newTotalHours,
+        sessions: newSessions,
+        lastStudyDate: 하루.today()
+    }));
   };
 
   const addTask = (title: string, subject: string, priority: Priority) => {
@@ -139,9 +161,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <DataContext.Provider value={{ 
-        tasks, reviews, streak, 
+        tasks, reviews, streak, totalHours, sessions,
         addTask, toggleTask, deleteTask, addSubtask, toggleSubtask,
-        addReview, deleteReview, updateReview 
+        addReview, deleteReview, updateReview, addFocusSession 
     }}>
       {children}
     </DataContext.Provider>

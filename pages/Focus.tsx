@@ -2,15 +2,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
-import { UserStats, UserProfile } from '../types';
+import { UserProfile } from '../types';
+import { useData } from '../contexts/dataContext';
 
 interface FocusProps {
-    stats: UserStats;
-    updateStats: (newStats: Partial<UserStats>) => void;
     userProfile: UserProfile;
 }
 
-const Focus: React.FC<FocusProps> = ({ stats, updateStats, userProfile }) => {
+const Focus: React.FC<FocusProps> = ({ userProfile }) => {
+  const { addFocusSession } = useData();
   const [isActive, setIsActive] = useState(false);
   const [duration, setDuration] = useState(25); // minutes
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -39,19 +39,7 @@ const Focus: React.FC<FocusProps> = ({ stats, updateStats, userProfile }) => {
   const handleFinish = () => {
     setIsActive(false);
     setSessionCompleted(true);
-    
-    // Calculate Rewards
-    const hoursToAdd = duration / 60;
-    
-    // Generate Local Date String YYYY-MM-DD
-    const date = new Date();
-    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-    updateStats({
-        totalHours: stats.totalHours + hoursToAdd,
-        sessions: stats.sessions + 1,
-        lastStudyDate: today
-    });
+    addFocusSession(duration);
   };
 
   useEffect(() => {
@@ -62,7 +50,7 @@ const Focus: React.FC<FocusProps> = ({ stats, updateStats, userProfile }) => {
       handleFinish();
     }
     return () => { if (interval) clearInterval(interval); };
-  }, [isActive, timeLeft]);
+  }, [isActive, timeLeft, handleFinish]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
