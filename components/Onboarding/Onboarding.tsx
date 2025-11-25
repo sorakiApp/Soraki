@@ -3,12 +3,10 @@ import React, { useState, useRef } from 'react';
 import { UserProfile } from '../../types';
 import { ArrowRight, Upload, Check } from 'lucide-react';
 import MascotPlaceholder from '../UI/MascotPlaceholder';
+import { useData } from '../../contexts/dataContext';
 
-interface OnboardingProps {
-  onComplete: (profile: UserProfile) => void;
-}
-
-const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+const Onboarding: React.FC = () => {
+  const { updateUserProfile } = useData();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -18,8 +16,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   const handleNext = () => {
     if (step === 0 && !name.trim()) return;
-    // Step 1 (Avatar) is optional
-    
     setStep(prev => prev + 1);
   };
 
@@ -28,7 +24,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Basic compression/resize could go here, keeping it simple for now
         setAvatar(reader.result as string);
       };
       reader.readAsDataURL(file);
@@ -36,7 +31,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   };
 
   const handleFinish = () => {
-    onComplete({
+    updateUserProfile({
       name,
       age,
       studyGoal,
@@ -84,7 +79,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </div>
           )}
 
-          {/* Step 1: Avatar (Moved from Step 2) */}
+          {/* Step 1: Avatar */}
           {step === 1 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
               <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Uma foto sua?</h2>
@@ -131,10 +126,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </div>
           )}
 
-          {/* Step 2: Details (Moved from Step 1) */}
+          {/* Step 2: Details */}
           {step === 2 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
-              {/* Mascot image removed here */}
               <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Prazer, {name}!</h2>
               <p className="text-soraki-textLight text-sm mb-8">Me conte um pouco mais sobre você.</p>
               

@@ -1,13 +1,11 @@
 
 import React from 'react';
 import UserAvatar from '../UI/UserAvatar';
-import { UserProfile } from '../../types';
+import { useData } from '../../contexts/dataContext';
 
-interface HeaderProps {
-  userProfile?: UserProfile;
-}
+const Header: React.FC = () => {
+  const { userProfile } = useData();
 
-const Header: React.FC<HeaderProps> = ({ userProfile }) => {
   return (
     <div className="flex justify-between items-center py-4 px-6 sticky top-0 z-40 bg-soraki-bg/95 backdrop-blur-sm transition-all duration-300 border-b border-transparent dark:border-soraki-neutral/50">
       <div className="flex items-center gap-3">

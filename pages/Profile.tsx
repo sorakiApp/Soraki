@@ -1,36 +1,36 @@
 
 import React, { useRef, useState } from 'react';
 import Card from '../components/UI/Card';
-import { UserStats, UserProfile } from '../types';
 import { Edit2, Flame, Clock, Activity, Moon, Sun, Download, Upload, AlertCircle, Check, Camera } from 'lucide-react';
 import UserAvatar from '../components/UI/UserAvatar';
+import { useData } from '../contexts/dataContext';
 
 interface ProfileProps {
-  stats: UserStats;
-  userProfile: UserProfile;
-  updateProfile: (newProfile: Partial<UserProfile>) => void;
   isDarkMode?: boolean;
   toggleTheme?: () => void;
   refreshApp: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, isDarkMode, toggleTheme, refreshApp }) => {
+const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }) => {
+  const { userProfile, streak, totalHours, sessions, updateUserProfile } = useData();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  if (!userProfile) {
+      return <div>Carregando perfil...</div>; // Ou um placeholder melhor
+  }
 
   const handleAvatarUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        updateProfile({ avatar: reader.result as string });
+        updateUserProfile({ avatar: reader.result as string });
       };
       reader.readAsDataURL(file);
     }
   };
-
-  // --- BACKUP FUNCTIONS ---
 
   const handleExportBackup = () => {
     try {
@@ -48,21 +48,13 @@ const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, is
 
         const jsonString = JSON.stringify(backupData, null, 2);
         const blob = new Blob([jsonString], { type: "application/json" });
-        
-        // Simplified filename to avoid mobile filesystem issues with colons/spaces
         const fileName = "soraki-backup.json";
-        
         const link = document.createElement("a");
-        
-        // Create object URL
         const url = URL.createObjectURL(blob);
         link.href = url;
         link.download = fileName;
-        
         document.body.appendChild(link);
         link.click();
-        
-        // Cleanup
         setTimeout(() => {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
@@ -86,7 +78,6 @@ const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, is
 
             if (!parsed.data) throw new Error("Formato inválido");
 
-            // Restore Data
             if (parsed.data.stats) localStorage.setItem('soraki-stats', parsed.data.stats);
             if (parsed.data.settings) localStorage.setItem('soraki-settings', parsed.data.settings);
             if (parsed.data.tasks) localStorage.setItem('soraki-tasks', parsed.data.tasks);
@@ -94,10 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, is
             if (parsed.data.profile) localStorage.setItem('soraki-profile', parsed.data.profile);
 
             setImportStatus('success');
-            
-            // Soft Reload: Update App state without refreshing browser
             refreshApp();
-
             setTimeout(() => setImportStatus('idle'), 3000);
 
         } catch (err) {
@@ -114,7 +102,6 @@ const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, is
         {/* Avatar Header */}
         <div className="flex flex-col items-center mt-6 mb-8 relative">
             <div className="flex items-center justify-center gap-4">
-                 {/* Avatar container */}
                  <div className="w-24 h-24 rounded-2xl flex items-center justify-center relative overflow-visible">
                      <div className="relative z-10">
                          <UserAvatar profileImage={userProfile.avatar} size="lg" mood="happy" />
@@ -140,19 +127,19 @@ const Profile: React.FC<ProfileProps> = ({ stats, userProfile, updateProfile, is
             <Card className="flex flex-col items-center justify-center py-6">
                 <Flame className="text-orange-500 fill-orange-500 mb-2 w-6 h-6" />
                 <div className="bg-orange-50 dark:bg-orange-900/20 px-3 py-0.5 rounded-full mb-1 border border-orange-100 dark:border-orange-900/30">
-                    <span className="text-orange-500 font-bold text-sm">{stats.streak}</span>
+                    <span className="text-orange-500 font-bold text-sm">{streak}</span>
                     <span className="text-[10px] text-orange-400 ml-1">dias</span>
                 </div>
                 <span className="text-[10px] text-soraki-textLight">Sequência</span>
             </Card>
             <Card className="flex flex-col items-center justify-center py-6">
                 <Clock className="text-soraki-text mb-2 w-6 h-6" />
-                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.totalHours.toFixed(1)}h</span>
+                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{totalHours.toFixed(1)}h</span>
                 <span className="text-[10px] text-soraki-textLight">Horas</span>
             </Card>
              <Card className="flex flex-col items-center justify-center py-6">
                 <Activity className="text-soraki-text mb-2 w-6 h-6" />
-                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.sessions}</span>
+                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{sessions}</span>
                 <span className="text-[10px] text-soraki-textLight">Sessões</span>
             </Card>
         </div>
