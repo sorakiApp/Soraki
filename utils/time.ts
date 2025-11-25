@@ -1,7 +1,10 @@
 
-// Helper para obter a data no formato YYYY-MM-DD
+// Helper para obter a data no formato YYYY-MM-DD, respeitando o fuso horário local.
 const getLocalDate = (date: Date): string => {
-    return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 export const 하루 = { // "haru" significa "dia" em coreano
@@ -15,11 +18,13 @@ export const 하루 = { // "haru" significa "dia" em coreano
         return getLocalDate(date);
     },
 
-    isToday: (dateStr: string): boolean => {
-        return dateStr === 하루.today();
+    isToday: (dateString: string): boolean => {
+        return dateString === getLocalDate(new Date());
     },
 
-    isYesterday: (dateStr: string): boolean => {
-        return dateStr === 하루.yesterday();
+    isYesterday: (dateString: string): boolean => {
+        const date = new Date();
+        date.setDate(date.getDate() - 1);
+        return dateString === getLocalDate(date);
     }
 };

@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { UserProfile } from '../../types';
-import { ArrowRight, Upload, Check } from 'lucide-react';
+import { ArrowRight, Upload, Check, Smartphone } from 'lucide-react';
 import MascotPlaceholder from '../UI/MascotPlaceholder';
 import { useData } from '../../contexts/dataContext';
 
@@ -126,13 +126,13 @@ const Onboarding: React.FC = () => {
             </div>
           )}
 
-          {/* Step 2: Details */}
+          {/* Step 2: Details & PWA Tip */}
           {step === 2 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
               <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Prazer, {name}!</h2>
-              <p className="text-soraki-textLight text-sm mb-8">Me conte um pouco mais sobre você.</p>
+              <p className="text-soraki-textLight text-sm mb-6">Me conte um pouco mais sobre você.</p>
               
-              <div className="w-full space-y-4 mb-8">
+              <div className="w-full space-y-4 mb-6">
                 <input
                   type="number"
                   value={age}
@@ -148,6 +148,17 @@ const Onboarding: React.FC = () => {
                   placeholder="Seu objetivo (ex: Passar em Med)"
                   className="w-full bg-soraki-bg border-2 border-soraki-neutral focus:border-soraki-primary rounded-xl px-4 py-3 font-medium text-soraki-text outline-none transition-colors"
                 />
+              </div>
+
+              {/* PWA Installation Tip */}
+              <div className="bg-soraki-primary/10 border border-soraki-primary/20 rounded-xl p-4 flex items-center gap-3 text-left mb-6 w-full">
+                  <Smartphone size={40} className="text-soraki-primaryDark flex-shrink-0" />
+                  <div>
+                      <h4 className="font-bold text-sm text-soraki-primaryDark">Dica: use como um App!</h4>
+                      <p className="text-xs text-soraki-text leading-tight mt-1">
+                          Clique nos 3 pontinhos do navegador e escolha <strong>"Adicionar à tela inicial"</strong> para uma experiência completa.
+                      </p>
+                  </div>
               </div>
               
               <button 
