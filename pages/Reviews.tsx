@@ -1,50 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '../components/UI/Card';
 import { Plus, ArrowRight, Trash2, X, Smile, Frown, Meh, Laugh } from 'lucide-react';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
 import { ReviewItem, ReviewDifficulty } from '../types';
+import { useData } from '../contexts/dataContext';
 
 // Constantes do Algoritmo SRS
 const MIN_EASE = 1.3;
 const STARTING_EASE = 2.5;
 
 const Reviews: React.FC = () => {
-  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const { reviews, addReview: addReviewContext, deleteReview: deleteReviewContext, updateReview } = useData();
   const [isAdding, setIsAdding] = useState(false);
   const [newTopic, setNewTopic] = useState('');
   
   const [studyingItem, setStudyingItem] = useState<ReviewItem | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  useEffect(() => {
-      const saved = localStorage.getItem('soraki-reviews');
-      if (saved) setReviews(JSON.parse(saved));
-  }, []);
-
-  useEffect(() => {
-      localStorage.setItem('soraki-reviews', JSON.stringify(reviews));
-  }, [reviews]);
-
-  const addReview = () => {
+  const handleAddReview = () => {
       if (!newTopic.trim()) return;
-      const newItem: ReviewItem = {
-          id: Date.now().toString(),
-          title: newTopic,
-          subject: 'Geral', 
-          level: 0,
-          interval: 0,
-          easeFactor: STARTING_EASE,
-          nextReview: new Date().toISOString()
-      };
-      setReviews([...reviews, newItem]);
+      addReviewContext(newTopic);
       setNewTopic('');
       setIsAdding(false);
   };
 
-  const deleteReview = (id: string, e: React.MouseEvent) => {
+  const handleDeleteReview = (id: string, e: React.MouseEvent) => {
       e.stopPropagation();
-      setReviews(reviews.filter(r => r.id !== id));
+      deleteReviewContext(id);
   }
 
   const startSession = (item: ReviewItem) => {
@@ -63,7 +46,7 @@ const Reviews: React.FC = () => {
         case 'muito-dificil':
             newEaseFactor = Math.max(MIN_EASE, studyingItem.easeFactor - 0.2);
             newInterval = 1;
-            newLevel = studyingItem.level > 0 ? studyingItem.level - 1 : 0; // Pode regredir
+            newLevel = studyingItem.level > 0 ? studyingItem.level - 1 : 0;
             break;
         case 'dificil':
             newEaseFactor = Math.max(MIN_EASE, studyingItem.easeFactor - 0.15);
@@ -80,35 +63,30 @@ const Reviews: React.FC = () => {
             break;
     }
     
-    if (studyingItem.level === 0) { // Primeira revisão
+    if (studyingItem.level === 0) {
         if(difficulty === 'facil' || difficulty === 'muito-facil') newInterval = 1;
-        else newInterval = 0; // Revisar de novo hoje
+        else newInterval = 0;
     }
 
     const nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + Math.max(1, newInterval));
 
-    const updatedReviews = reviews.map(r => {
-        if (r.id === studyingItem.id) {
-            return {
-                ...r,
-                interval: newInterval,
-                level: newLevel,
-                easeFactor: newEaseFactor,
-                nextReview: nextDate.toISOString()
-            };
-        }
-        return r;
-    });
+    const updatedReview: ReviewItem = {
+        ...studyingItem,
+        interval: newInterval,
+        level: newLevel,
+        easeFactor: newEaseFactor,
+        nextReview: nextDate.toISOString(),
+    };
 
-    setReviews(updatedReviews);
+    updateReview(studyingItem.id, updatedReview);
     setStudyingItem(null);
   };
 
   const getDaysUntilDue = (dateStr: string) => {
     const due = new Date(dateStr);
     const today = new Date();
-    today.setHours(0,0,0,0); // Normalizar para o início do dia
+    today.setHours(0,0,0,0);
     due.setHours(0,0,0,0);
     const diffTime = due.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
@@ -142,13 +120,13 @@ const Reviews: React.FC = () => {
               <textarea
                 autoFocus
                 className="w-full bg-soraki-bg border border-soraki-neutral rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-soraki-primary/50"
-                placeholder="Cole um texto e a Soraki sugere perguntas, ou apenas digite o tópico..."
+                placeholder="Qual pergunta ou conceito você quer memorizar?"
                 rows={3}
                 value={newTopic}
                 onChange={e => setNewTopic(e.target.value)}
               />
               <div className='flex justify-end'>
-                <button onClick={addReview} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl font-bold text-sm">Adicionar</button>
+                <button onClick={handleAddReview} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl font-bold text-sm">Adicionar</button>
               </div>
           </div>
       )}
@@ -175,7 +153,7 @@ const Reviews: React.FC = () => {
                                 </div>
                                 <h4 className="text-lg font-bold text-soraki-primaryDark leading-tight">{review.title}</h4>
                             </div>
-                            <button onClick={(e) => deleteReview(review.id, e)} className="text-gray-300 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={(e) => handleDeleteReview(review.id, e)} className="text-gray-300 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                  <Trash2 size={16} />
                             </button>
                         </div>

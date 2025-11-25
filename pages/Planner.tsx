@@ -1,62 +1,28 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, Check, Tag, Trash2, Circle, CheckCircle2, Zap } from 'lucide-react';
-import { Task, Priority, SubTask } from '../types';
+import { Priority } from '../types';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
-import { 하루 } from '../utils/time'; // Assumindo que `haru` é um utilitário de data
+import { useData } from '../contexts/dataContext';
 
 const Planner: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks, streak, addTask, toggleTask, deleteTask, addSubtask, toggleSubtask } = useData();
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [selectedSection, setSelectedSection] = useState('Estudo');
   const [selectedPriority, setSelectedPriority] = useState<Priority>('leve');
   const [isAdding, setIsAdding] = useState(false);
-  const [streak, setStreak] = useState(0);
 
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('soraki-tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-    // Carregar e verificar a constância
-    const stats = localStorage.getItem('soraki-stats');
-    if (stats) {
-      const { streak, lastCompletionDay } = JSON.parse(stats);
-      if (하루.isYesterday(lastCompletionDay)) {
-        setStreak(streak);
-      } else if (!하루.isToday(lastCompletionDay)) {
-        setStreak(0); // Quebrou a sequência
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('soraki-tasks', JSON.stringify(tasks));
-    checkCompletionForStreak();
-  }, [tasks]);
-
-  const checkCompletionForStreak = () => {
-    const todayStr = 하루.today();
-    const completedToday = tasks.filter(t => t.date === todayStr && t.completed).length > 0;
-    
-    if (completedToday) {
-      const stats = localStorage.getItem('soraki-stats');
-      let currentStreak = 0;
-      let lastCompletionDay = '';
-
-      if (stats) {
-        const parsedStats = JSON.parse(stats);
-        currentStreak = parsedStats.streak || 0;
-        lastCompletionDay = parsedStats.lastCompletionDay || '';
-      }
-
-      if (lastCompletionDay !== todayStr) {
-        const newStreak = 하루.isYesterday(lastCompletionDay) ? currentStreak + 1 : 1;
-        setStreak(newStreak);
-        localStorage.setItem('soraki-stats', JSON.stringify({ streak: newStreak, lastCompletionDay: todayStr }));
-      }
-    }
+  const handleAddTask = () => {
+    if (!newTaskTitle.trim()) return;
+    addTask(newTaskTitle, selectedSection, selectedPriority);
+    setNewTaskTitle('');
+    setIsAdding(false);
   };
+  
+  const handleDeleteTask = (id: string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteTask(id);
+  }
 
   const sections = ['Estudo', 'Faculdade', 'Vida pessoal', 'Saúde', 'Projetos'];
   const priorities: { id: Priority; label: string; icon: string; }[] = [
@@ -64,58 +30,6 @@ const Planner: React.FC = () => {
     { id: 'medio', label: 'Médio', icon: '🌿' },
     { id: 'profundo', label: 'Profundo', icon: '🌳' },
   ];
-
-  const addTask = () => {
-    if (!newTaskTitle.trim()) return;
-    const date = new Date();
-    const localDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title: newTaskTitle,
-      subject: selectedSection,
-      completed: false,
-      date: localDate,
-      priority: selectedPriority,
-      subtasks: [],
-    };
-    setTasks([...tasks, newTask]);
-    setNewTaskTitle('');
-    setIsAdding(false);
-  };
-
-  const toggleTask = (id: string) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
-  
-  const addSubtask = (taskId: string, subtaskTitle: string) => {
-    if(!subtaskTitle.trim()) return;
-
-    const newSubtask: SubTask = {
-        id: Date.now().toString(),
-        title: subtaskTitle,
-        completed: false
-    }
-
-    setTasks(tasks.map(t => t.id === taskId ? { ...t, subtasks: [...t.subtasks, newSubtask] } : t));
-  }
-
-  const toggleSubtask = (taskId: string, subtaskId: string) => {
-    setTasks(tasks.map(task => {
-        if (task.id === taskId) {
-            const updatedSubtasks = task.subtasks.map(sub => 
-                sub.id === subtaskId ? { ...sub, completed: !sub.completed } : sub
-            );
-            return { ...task, subtasks: updatedSubtasks };
-        }
-        return task;
-    }));
-  };
-
-  const deleteTask = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setTasks(tasks.filter(t => t.id !== id));
-  };
   
   const getPriorityClass = (priority: Priority) => {
     switch (priority) {
@@ -166,11 +80,10 @@ const Planner: React.FC = () => {
                     type="text" 
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addTask()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
                     placeholder="Ex: Estudar capítulo 3 de biologia..."
                     className="w-full p-3 mb-3 rounded-xl bg-soraki-bg border-none focus:ring-2 focus:ring-soraki-primary/50 text-soraki-text placeholder-soraki-textLight"
                 />
-
                 <div className='flex justify-between items-center mb-4'>
                     <div className="flex gap-2 items-center flex-wrap">
                         <span className="text-sm font-semibold text-soraki-textLight mr-2">Prioridade:</span>
@@ -189,7 +102,6 @@ const Planner: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4 items-center flex-wrap">
                      <span className="text-sm font-semibold text-soraki-textLight mr-2 whitespace-nowrap mt-1">Seção:</span>
                     {sections.map(sec => (
@@ -206,9 +118,8 @@ const Planner: React.FC = () => {
                         </button>
                     ))}
                 </div>
-
                 <div className="flex justify-end mt-3">
-                    <button onClick={addTask} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl text-sm font-bold">
+                    <button onClick={handleAddTask} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl text-sm font-bold">
                         Adicionar Tarefa
                     </button>
                 </div>
@@ -260,7 +171,7 @@ const Planner: React.FC = () => {
                                 {priorities.find(p => p.id === task.priority)?.icon}
                             </span>
                             <button 
-                                onClick={(e) => deleteTask(task.id, e)}
+                                onClick={(e) => handleDeleteTask(task.id, e)}
                                 className="text-red-300 hover:text-red-500 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 <Trash2 size={16} />
