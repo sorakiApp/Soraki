@@ -1,10 +1,19 @@
 
+export type Priority = 'leve' | 'medio' | 'profundo';
+
+export interface SubTask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
 export interface Task {
   id: string;
   title: string;
-  subject: string; // Added subject for categorization
+  subject: string;
   completed: boolean;
   date: string; // YYYY-MM-DD
+  priority: Priority;
+  subtasks: SubTask[];
 }
 
 export interface UserStats {
@@ -14,13 +23,17 @@ export interface UserStats {
   lastStudyDate?: string; // To track streaks
 }
 
+export type ReviewDifficulty = 'muito-dificil' | 'dificil' | 'facil' | 'muito-facil';
+
 export interface ReviewItem {
   id: string;
   title: string;
   subject: string;
+  // SRS Data
   level: number;
-  nextReview: string; // ISO Date string
   interval: number; // Current interval in days
+  easeFactor: number; // Similar to Anki's ease factor
+  nextReview: string; // ISO Date string
 }
 
 export interface UserProfile {
