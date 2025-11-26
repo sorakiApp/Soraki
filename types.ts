@@ -27,7 +27,8 @@ export type ReviewDifficulty = 'muito-dificil' | 'dificil' | 'facil' | 'muito-fa
 
 export interface ReviewItem {
   id: string;
-  title: string;
+  front: string; // Pergunta
+  back: string;  // Resposta
   subject: string;
   // SRS Data
   level: number;

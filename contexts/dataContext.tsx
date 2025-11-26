@@ -15,7 +15,7 @@ interface DataContextProps {
   deleteTask: (id: string) => void;
   addSubtask: (taskId: string, title: string) => void;
   toggleSubtask: (taskId: string, subtaskId: string) => void;
-  addReview: (title: string) => void;
+  addReview: (front: string, back: string, subject: string) => void;
   deleteReview: (id: string) => void;
   updateReview: (id: string, newReview: ReviewItem) => void;
   addFocusSession: (durationInMinutes: number) => void;
@@ -158,11 +158,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
-  const addReview = (title: string) => {
+  const addReview = (front: string, back: string, subject: string) => {
     const newReview: ReviewItem = {
       id: Date.now().toString(),
-      title,
-      subject: 'Geral',
+      front,
+      back,
+      subject: subject || 'Geral',
       level: 0,
       interval: 0,
       easeFactor: 2.5,
