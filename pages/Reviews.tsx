@@ -19,6 +19,7 @@ const Reviews: React.FC = () => {
   
   const [sessionInProgress, setSessionInProgress] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [feedbackInfo, setFeedbackInfo] = useState<{ message: string } | null>(null);
 
   const reviewQueue = useMemo(() => {
     const today = new Date();
@@ -41,9 +42,19 @@ const Reviews: React.FC = () => {
   const handleStartSession = () => {
     if (reviewQueue.length > 0) {
       setCurrentCardIndex(0);
+      setFeedbackInfo(null); // Reseta o feedback ao iniciar
       setSessionInProgress(true);
     }
   }
+
+  const handleContinue = () => {
+    setFeedbackInfo(null); // Limpa a mensagem de feedback
+    if (currentCardIndex < reviewQueue.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+    } else {
+      setSessionInProgress(false); // Fim da fila
+    }
+  };
 
   const processResult = (difficulty: ReviewDifficulty) => {
     if (!currentCard) return;
@@ -52,14 +63,11 @@ const Reviews: React.FC = () => {
     let newEaseFactor: number = currentCard.easeFactor;
     let newLevel: number = currentCard.level;
 
-    // Lógica do SuperMemo 2 (SM-2) adaptada
     if (difficulty === 'muito-dificil' || difficulty === 'dificil') {
-      // Se errou (qualidade < 3), reseta o intervalo e regride o nível
       newInterval = 1;
       newLevel = Math.max(0, newLevel - 1);
       newEaseFactor = Math.max(MIN_EASE, currentCard.easeFactor - 0.2);
     } else {
-      // Se acertou, calcula o próximo intervalo
       newLevel++;
       if (currentCard.level === 0) {
         newInterval = 1;
@@ -68,12 +76,12 @@ const Reviews: React.FC = () => {
       } else {
         newInterval = Math.round(currentCard.interval * newEaseFactor);
       }
-      // Ajusta o Fator de Facilidade
-      if(difficulty === 'facil') newEaseFactor = currentCard.easeFactor; // sem alteração
+      if(difficulty === 'facil') newEaseFactor = currentCard.easeFactor;
       if(difficulty === 'muito-facil') newEaseFactor = currentCard.easeFactor + 0.15;
     }
     
     const nextDate = new Date();
+    nextDate.setHours(0, 0, 0, 0);
     nextDate.setDate(nextDate.getDate() + newInterval);
 
     const updatedReview: ReviewItem = {
@@ -86,13 +94,27 @@ const Reviews: React.FC = () => {
 
     updateReview(currentCard.id, updatedReview);
 
-    // Avança para o próximo card ou termina a sessão
-    if (currentCardIndex < reviewQueue.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
-    } else {
-      setSessionInProgress(false);
+    const getNextReviewMessage = (interval: number) => {
+      if (interval <= 1) return "Ele estará de volta para revisão amanhã. Bom trabalho!";
+      return `Nos vemos de novo em ${interval} dias. Continue assim!`;
     }
+
+    setFeedbackInfo({ message: getNextReviewMessage(newInterval) });
   };
+
+  // Telas da Sessão
+  const FeedbackScreen = ({ message, onContinue }: { message: string, onContinue: () => void }) => (
+    <div className="flex flex-col items-center justify-center text-center p-8 h-full animate-fade-in">
+      <MascotPlaceholder mood="happy" size="lg" className="mb-6" />
+      <h2 className="text-2xl font-bold text-soraki-primaryDark">Revisão Registrada!</h2>
+      <p className="text-soraki-textLight mt-2 mb-6 max-w-sm">{message}</p>
+      <button 
+        onClick={onContinue} 
+        className="bg-soraki-primary text-white px-8 py-3 rounded-xl font-bold shadow-soft transition-transform hover:scale-105">
+        Continuar
+      </button>
+    </div>
+  );
 
   const SessionEndScreen = () => (
     <div className="flex flex-col items-center justify-center text-center p-8">
@@ -110,13 +132,15 @@ const Reviews: React.FC = () => {
   if (sessionInProgress) {
     return (
       <div className="w-full h-full flex flex-col">
-          {currentCard ? (
+          {feedbackInfo ? (
+            <FeedbackScreen message={feedbackInfo.message} onContinue={handleContinue} />
+          ) : currentCard ? (
             <>
               <div className='flex justify-between items-center px-4 pt-4'>
                 <p className="text-sm font-semibold text-soraki-textLight">
                   Card {currentCardIndex + 1} de {reviewQueue.length}
                 </p>
-                <button onClick={() => setSessionInProgress(false)} className="text-soraki-textLight hover:text-soraki-text">
+                <button onClick={() => { setSessionInProgress(false); setFeedbackInfo(null); }} className="text-soraki-textLight hover:text-soraki-text">
                   <X size={20} />
                 </button>
               </div>
