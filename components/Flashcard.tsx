@@ -21,8 +21,11 @@ const Flashcard: React.FC<FlashcardProps> = ({ card, onReview }) => {
 
   const handleReview = (difficulty: ReviewDifficulty) => {
     onReview(difficulty);
-    setIsFlipped(false);
-    setShowDifficulty(false);
+    // Reset state for the next card
+    setTimeout(() => {
+        setIsFlipped(false);
+        setShowDifficulty(false);
+    }, 300); // Delay to allow exit animation
   };
 
   const difficultyButtons: { label: string; value: ReviewDifficulty, color: string }[] = [
@@ -45,12 +48,17 @@ const Flashcard: React.FC<FlashcardProps> = ({ card, onReview }) => {
           animate={{ rotateY: isFlipped ? 180 : 0 }}
         >
           {/* Frente do Card */}
-          <div className="absolute w-full h-full backface-hidden bg-soraki-card rounded-xl shadow-lg flex items-center justify-center p-6">
+          <div 
+            className="absolute w-full h-full bg-soraki-card rounded-xl shadow-lg flex items-center justify-center p-6"
+            style={{ backfaceVisibility: 'hidden' }}
+          >
             <p className="text-xl text-center font-semibold text-soraki-text-light">{card.front}</p>
           </div>
           {/* Verso do Card */}
-          <div className="absolute w-full h-full backface-hidden bg-soraki-card rounded-xl shadow-lg flex items-center justify-center p-6"
-               style={{ transform: 'rotateY(180deg)' }}>
+          <div 
+            className="absolute w-full h-full bg-soraki-card rounded-xl shadow-lg flex items-center justify-center p-6"
+            style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
+          >
             <p className="text-lg text-center text-soraki-text-light">{card.back}</p>
           </div>
         </motion.div>

@@ -82,11 +82,11 @@ const Planner: React.FC = () => {
                     onChange={(e) => setNewTaskTitle(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
                     placeholder="Ex: Estudar capítulo 3 de biologia..."
-                    className="w-full p-3 mb-3 rounded-xl bg-soraki-bg border-none focus:ring-2 focus:ring-soraki-primary/50 text-soraki-text placeholder-soraki-textLight"
+                    className="w-full p-3 mb-3 rounded-xl bg-soraki-bg border-none focus:ring-2 focus:ring-soraki-primary/50 text-white-800 placeholder-gray-500"
                 />
                 <div className='flex justify-between items-center mb-4'>
                     <div className="flex gap-2 items-center flex-wrap">
-                        <span className="text-sm font-semibold text-soraki-textLight mr-2">Prioridade:</span>
+                        <span className="text-sm font-semibold text-gray-600 mr-2">Prioridade:</span>
                         {priorities.map(p => (
                             <button
                                 key={p.id}
@@ -94,7 +94,7 @@ const Planner: React.FC = () => {
                                 className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                                     selectedPriority === p.id 
                                     ? 'bg-soraki-primaryDark text-white shadow-sm' 
-                                    : 'bg-soraki-bg text-soraki-textLight border border-soraki-neutral'
+                                    : 'bg-soraki-bg text-gray-700 border border-soraki-neutral'
                                 }`}
                             >
                                 {p.icon} {p.label}
@@ -103,7 +103,7 @@ const Planner: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4 items-center flex-wrap">
-                     <span className="text-sm font-semibold text-soraki-textLight mr-2 whitespace-nowrap mt-1">Seção:</span>
+                     <span className="text-sm font-semibold text-gray-600 mr-2 whitespace-nowrap mt-1">Seção:</span>
                     {sections.map(sec => (
                         <button
                             key={sec}
@@ -111,7 +111,7 @@ const Planner: React.FC = () => {
                             className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                                 selectedSection === sec 
                                 ? 'bg-soraki-primaryDark text-white' 
-                                : 'bg-soraki-bg text-soraki-textLight border border-soraki-neutral'
+                                : 'bg-soraki-bg text-gray-700 border border-soraki-neutral'
                             }`}
                         >
                             {sec}
@@ -142,7 +142,7 @@ const Planner: React.FC = () => {
                     key={task.id}
                     className={`p-4 rounded-2xl group transition-all duration-300 border ${
                         task.completed 
-                        ? 'bg-soraki-bg border-transparent opacity-60' 
+                        ? 'bg-gray-100/50 border-transparent opacity-60' 
                         : `${getPriorityBgClass(task.priority)} ${getPriorityClass(task.priority)} shadow-card`
                     }`}
                 >
@@ -152,22 +152,22 @@ const Planner: React.FC = () => {
                     >
                         <div className="flex items-center gap-3 overflow-hidden">
                             <div className={`w-6 h-6 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                task.completed ? 'bg-soraki-primary border-soraki-primary' : 'border-soraki-neutral'
+                                task.completed ? 'bg-soraki-primary border-soraki-primary' : 'border-gray-400'
                             }`}>
                                 {task.completed && <Check size={14} className="text-white" />}
                             </div>
                             <div className="flex flex-col overflow-hidden">
-                                <span className={`text-soraki-text font-bold text-sm truncate ${task.completed ? 'line-through text-soraki-textLight' : ''}`}>
+                                <span className={`text-gray-800 font-bold text-sm truncate ${task.completed ? 'line-through text-gray-500' : ''}`}>
                                     {task.title}
                                 </span>
-                                <span className="text-[10px] text-soraki-textLight flex items-center gap-1">
+                                <span className="text-[10px] text-gray-500 flex items-center gap-1">
                                     <Tag size={10} /> {task.subject}
                                 </span>
                             </div>
                         </div>
                         
                         <div className='flex items-center'>
-                             <span className='text-xs mr-4 text-soraki-textLight'>
+                             <span className='text-xs mr-4 text-gray-600'>
                                 {priorities.find(p => p.id === task.priority)?.icon}
                             </span>
                             <button 
@@ -183,8 +183,8 @@ const Planner: React.FC = () => {
                     <div className="pl-9 mt-3 space-y-2">
                         {task.subtasks.map(sub => (
                              <div key={sub.id} onClick={() => toggleSubtask(task.id, sub.id)} className="flex items-center gap-2 group cursor-pointer">
-                                {sub.completed ? <CheckCircle2 size={14} className="text-soraki-primary" /> : <Circle size={14} className="text-soraki-neutral" />}
-                                <span className={`text-xs ${sub.completed ? 'line-through text-soraki-textLight' : 'text-soraki-text'}`}>
+                                {sub.completed ? <CheckCircle2 size={14} className="text-soraki-primary" /> : <Circle size={14} className="text-gray-400" />}
+                                <span className={`text-sm ${sub.completed ? 'line-through text-gray-500' : 'text-gray-700'}`}>
                                     {sub.title}
                                 </span>
                             </div>
@@ -200,7 +200,7 @@ const Planner: React.FC = () => {
                                 name="subtaskTitle"
                                 type="text"
                                 placeholder="Adicionar microtarefa..."
-                                className="w-full text-xs bg-transparent border-t-0 border-x-0 border-b border-dashed border-soraki-neutral/30 focus:ring-0 focus:border-soraki-primary/50 placeholder-soraki-textLight py-1 pl-0"
+                                className="w-full text-sm bg-transparent border-t-0 border-x-0 border-b border-dashed border-gray-300/50 focus:ring-0 focus:border-soraki-primary/50 placeholder-gray-500 py-1 pl-0 text-gray-700"
                             />
                         </form>
                     </div>
