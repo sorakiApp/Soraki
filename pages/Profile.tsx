@@ -12,7 +12,7 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }) => {
-  const { userProfile, streak, totalHours, sessions, updateUserProfile } = useData();
+  const { userProfile, stats, updateUserProfile } = useData();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -127,19 +127,19 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
             <Card className="flex flex-col items-center justify-center py-6">
                 <Flame className="text-orange-500 fill-orange-500 mb-2 w-6 h-6" />
                 <div className="bg-orange-50 dark:bg-orange-900/20 px-3 py-0.5 rounded-full mb-1 border border-orange-100 dark:border-orange-900/30">
-                    <span className="text-orange-500 font-bold text-sm">{streak}</span>
+                    <span className="text-orange-500 font-bold text-sm">{stats.streak}</span>
                     <span className="text-[10px] text-orange-400 ml-1">dias</span>
                 </div>
                 <span className="text-[10px] text-soraki-textLight">Sequência</span>
             </Card>
             <Card className="flex flex-col items-center justify-center py-6">
                 <Clock className="text-soraki-text mb-2 w-6 h-6" />
-                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{totalHours.toFixed(1)}h</span>
+                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.totalHours.toFixed(1)}h</span>
                 <span className="text-[10px] text-soraki-textLight">Horas</span>
             </Card>
              <Card className="flex flex-col items-center justify-center py-6">
                 <Activity className="text-soraki-text mb-2 w-6 h-6" />
-                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{sessions}</span>
+                <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.sessions}</span>
                 <span className="text-[10px] text-soraki-textLight">Sessões</span>
             </Card>
         </div>
