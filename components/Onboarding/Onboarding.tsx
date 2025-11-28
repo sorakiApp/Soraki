@@ -5,8 +5,10 @@ import { ArrowRight, Upload, Check, Smartphone } from 'lucide-react';
 import MascotPlaceholder from '../UI/MascotPlaceholder';
 import { useData } from '../../contexts/dataContext';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const Onboarding: React.FC = () => {
+  const { t } = useTranslation();
   const { updateUserProfile } = useData();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
@@ -57,8 +59,8 @@ const Onboarding: React.FC = () => {
           {step === 0 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
               <MascotPlaceholder mood="happy" size="md" className="mb-6" />
-              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Olá! Eu sou o Soraki.</h2>
-              <p className="text-soraki-textLight text-sm mb-8">Serei seu companheiro de estudos. Como posso te chamar?</p>
+              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">{t('onboarding.welcome')}</h2>
+              <p className="text-soraki-textLight text-sm mb-8">{t('onboarding.intro')}</p>
               
               <input
                 autoFocus
@@ -66,7 +68,7 @@ const Onboarding: React.FC = () => {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleNext()}
-                placeholder="Seu nome"
+                placeholder={t('onboarding.namePlaceholder')}
                 className="w-full bg-soraki-bg border-2 border-soraki-neutral focus:border-soraki-primary rounded-xl px-4 py-3 text-center font-bold text-soraki-primaryDark outline-none transition-colors mb-6"
               />
               
@@ -75,7 +77,7 @@ const Onboarding: React.FC = () => {
                 disabled={!name.trim()}
                 className="bg-soraki-primary text-white w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-soraki-primaryDark transition-colors disabled:opacity-50"
               >
-                Continuar <ArrowRight size={20} />
+                {t('onboarding.continue')} <ArrowRight size={20} />
               </button>
 
               <div className="mt-8">
@@ -87,8 +89,8 @@ const Onboarding: React.FC = () => {
           {/* Step 1: Avatar */}
           {step === 1 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
-              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Uma foto sua?</h2>
-              <p className="text-soraki-textLight text-sm mb-8">Opcional, mas fica lindo no app!</p>
+              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">{t('onboarding.avatar.title')}</h2>
+              <p className="text-soraki-textLight text-sm mb-8">{t('onboarding.avatar.subtitle')}</p>
               
               <div 
                 className="relative w-32 h-32 rounded-full bg-soraki-bg border-4 border-dashed border-soraki-neutral flex items-center justify-center mb-8 cursor-pointer overflow-hidden group hover:border-soraki-primary transition-colors"
@@ -99,7 +101,7 @@ const Onboarding: React.FC = () => {
                 ) : (
                   <div className="flex flex-col items-center text-soraki-textLight group-hover:text-soraki-primary">
                     <Upload size={24} />
-                    <span className="text-xs mt-2 font-bold">Enviar</span>
+                    <span className="text-xs mt-2 font-bold">{t('onboarding.avatar.upload')}</span>
                   </div>
                 )}
               </div>
@@ -116,7 +118,7 @@ const Onboarding: React.FC = () => {
                   onClick={handleNext}
                   className="bg-soraki-primary text-white w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-soraki-primaryDark transition-colors"
                 >
-                  {avatar ? 'Ficou ótimo!' : 'Continuar'} <ArrowRight size={20} />
+                  {avatar ? t('onboarding.avatar.looksGreat') : t('onboarding.continue')} <ArrowRight size={20} />
                 </button>
                 
                 {!avatar && (
@@ -124,7 +126,7 @@ const Onboarding: React.FC = () => {
                     onClick={handleNext}
                     className="text-soraki-textLight text-sm font-medium hover:text-soraki-text"
                   >
-                    Pular esta etapa
+                    {t('onboarding.avatar.skip')}
                   </button>
                 )}
               </div>
@@ -134,15 +136,15 @@ const Onboarding: React.FC = () => {
           {/* Step 2: Details & PWA Tip */}
           {step === 2 && (
             <div className="flex flex-col items-center text-center animate-fade-in">
-              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">Prazer, {name}!</h2>
-              <p className="text-soraki-textLight text-sm mb-6">Me conte um pouco mais sobre você.</p>
+              <h2 className="text-2xl font-bold text-soraki-primaryDark mb-2">{t('onboarding.details.title', { name })}</h2>
+              <p className="text-soraki-textLight text-sm mb-6">{t('onboarding.details.subtitle')}</p>
               
               <div className="w-full space-y-4 mb-6">
                 <input
                   type="number"
                   value={age}
                   onChange={e => setAge(e.target.value)}
-                  placeholder="Sua idade"
+                  placeholder={t('onboarding.details.agePlaceholder')}
                   className="w-full bg-soraki-bg border-2 border-soraki-neutral focus:border-soraki-primary rounded-xl px-4 py-3 font-medium text-soraki-text outline-none transition-colors"
                 />
                 <input
@@ -150,7 +152,7 @@ const Onboarding: React.FC = () => {
                   value={studyGoal}
                   onChange={e => setStudyGoal(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleFinish()}
-                  placeholder="Seu objetivo (ex: Passar em Med)"
+                  placeholder={t('onboarding.details.goalPlaceholder')}
                   className="w-full bg-soraki-bg border-2 border-soraki-neutral focus:border-soraki-primary rounded-xl px-4 py-3 font-medium text-soraki-text outline-none transition-colors"
                 />
               </div>
@@ -159,10 +161,8 @@ const Onboarding: React.FC = () => {
               <div className="bg-soraki-primary/10 border border-soraki-primary/20 rounded-xl p-4 flex items-center gap-3 text-left mb-6 w-full">
                   <Smartphone size={40} className="text-soraki-primaryDark flex-shrink-0" />
                   <div>
-                      <h4 className="font-bold text-sm text-soraki-primaryDark">Dica: use como um App!</h4>
-                      <p className="text-xs text-soraki-text leading-tight mt-1">
-                          Clique nos 3 pontinhos do navegador e escolha <strong>"Adicionar à tela inicial"</strong> para uma experiência completa.
-                      </p>
+                      <h4 className="font-bold text-sm text-soraki-primaryDark">{t('onboarding.pwa.title')}</h4>
+                      <p className="text-xs text-soraki-text leading-tight mt-1" dangerouslySetInnerHTML={{ __html: t('onboarding.pwa.description') }} />
                   </div>
               </div>
               
@@ -171,7 +171,7 @@ const Onboarding: React.FC = () => {
                 disabled={!age.trim() || !studyGoal.trim()}
                 className="bg-soraki-primary text-white w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-soraki-primaryDark transition-colors disabled:opacity-50"
               >
-                Começar <Check size={20} />
+                {t('onboarding.start')} <Check size={20} />
               </button>
             </div>
           )}

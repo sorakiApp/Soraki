@@ -103,7 +103,23 @@ const resources = {
       "profile.backup.import.error": "Error",
       "profile.backup.description": "Save your progress to a secure file.",
       "profile.backup.error": "Error generating backup. Please try again.",
-      "profile.backup.invalidFormat": "Invalid format"
+      "profile.backup.invalidFormat": "Invalid format",
+      "onboarding.welcome": "Hello! I am Soraki.",
+      "onboarding.intro": "I will be your study companion. What can I call you?",
+      "onboarding.namePlaceholder": "Your name",
+      "onboarding.continue": "Continue",
+      "onboarding.avatar.title": "How about a picture of you?",
+      "onboarding.avatar.subtitle": "Optional, but it looks great in the app!",
+      "onboarding.avatar.upload": "Upload",
+      "onboarding.avatar.looksGreat": "Looks great!",
+      "onboarding.avatar.skip": "Skip this step",
+      "onboarding.details.title": "Nice to meet you, {{name}}!",
+      "onboarding.details.subtitle": "Tell me a little more about yourself.",
+      "onboarding.details.agePlaceholder": "Your age",
+      "onboarding.details.goalPlaceholder": "Your goal (e.g., Pass Med School)",
+      "onboarding.pwa.title": "Tip: use it as an App!",
+      "onboarding.pwa.description": "Click on the 3 dots in the browser and choose <strong>\"Add to Home Screen\"</strong> for a complete experience.",
+      "onboarding.start": "Start"
     }
   },
   pt: {
@@ -206,7 +222,23 @@ const resources = {
       "profile.backup.import.error": "Erro",
       "profile.backup.description": "Salve seu progresso em um arquivo seguro.",
       "profile.backup.error": "Erro ao gerar backup. Tente novamente.",
-      "profile.backup.invalidFormat": "Formato inválido"
+      "profile.backup.invalidFormat": "Formato inválido",
+      "onboarding.welcome": "Olá! Eu sou o Soraki.",
+      "onboarding.intro": "Serei seu companheiro de estudos. Como posso te chamar?",
+      "onboarding.namePlaceholder": "Seu nome",
+      "onboarding.continue": "Continuar",
+      "onboarding.avatar.title": "Uma foto sua?",
+      "onboarding.avatar.subtitle": "Opcional, mas fica lindo no app!",
+      "onboarding.avatar.upload": "Enviar",
+      "onboarding.avatar.looksGreat": "Ficou ótimo!",
+      "onboarding.avatar.skip": "Pular esta etapa",
+      "onboarding.details.title": "Prazer, {{name}}!",
+      "onboarding.details.subtitle": "Me conte um pouco mais sobre você.",
+      "onboarding.details.agePlaceholder": "Sua idade",
+      "onboarding.details.goalPlaceholder": "Seu objetivo (ex: Passar em Med)",
+      "onboarding.pwa.title": "Dica: use como um App!",
+      "onboarding.pwa.description": "Clique nos 3 pontinhos do navegador e escolha <strong>\"Adicionar à tela inicial\"</strong> para uma experiência completa.",
+      "onboarding.start": "Começar"
     }
   }
 };
