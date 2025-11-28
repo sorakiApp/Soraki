@@ -7,6 +7,7 @@ const LanguageSwitcher: React.FC = () => {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    localStorage.setItem('soraki-language', lng);
   };
 
   return (

@@ -243,11 +243,13 @@ const resources = {
   }
 };
 
+const savedLanguage = localStorage.getItem('soraki-language') || 'pt';
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "pt",
+    lng: savedLanguage,
     fallbackLng: "en",
 
     interpolation: {
