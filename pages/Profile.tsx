@@ -4,6 +4,7 @@ import Card from '../components/UI/Card';
 import { Edit2, Flame, Clock, Activity, Moon, Sun, Download, Upload, AlertCircle, Check, Camera } from 'lucide-react';
 import UserAvatar from '../components/UI/UserAvatar';
 import { useData } from '../contexts/dataContext';
+import LanguageSwitcher from '../components/UI/LanguageSwitcher';
 
 interface ProfileProps {
   isDarkMode?: boolean;
@@ -146,6 +147,12 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
 
         {/* Settings */}
         <Card className="mb-6 space-y-4" padding="p-6">
+             {/* Language Switcher */}
+             <div className="flex items-center justify-between border-b border-soraki-neutral pb-4">
+                <h3 className="font-bold text-sm text-soraki-primaryDark">Idioma</h3>
+                <LanguageSwitcher />
+             </div>
+
              {/* Dark Mode Toggle */}
              {toggleTheme && (
                 <div className="flex items-center justify-between border-b border-soraki-neutral pb-4">

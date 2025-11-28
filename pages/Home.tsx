@@ -7,12 +7,14 @@ import { UserProfile } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/dataContext';
 import { 하루 } from '../utils/time';
+import { useTranslation } from 'react-i18next';
 
 interface HomeProps {
   userProfile: UserProfile;
 }
 
 const Home: React.FC<HomeProps> = ({ userProfile }) => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { tasks, streak } = useData();
 
@@ -25,17 +27,17 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
 
   const today = new Date();
   const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-  const dateString = today.toLocaleDateString('pt-BR', options);
+  const dateString = today.toLocaleDateString(i18n.language === 'pt' ? 'pt-BR' : 'en-US', options);
   
   const hour = today.getHours();
-  let greeting = "Bom dia";
+  let greetingKey = "greetings.morning";
   let mascotMood: "happy" | "sleep" | "study" = "study";
 
   if (hour >= 18) {
-    greeting = "Boa noite";
+    greetingKey = "greetings.evening";
     mascotMood = "sleep";
   } else if (hour >= 12) {
-    greeting = "Boa tarde";
+    greetingKey = "greetings.afternoon";
     mascotMood = "happy";
   }
 
@@ -45,7 +47,7 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
       <Card className="relative overflow-visible mt-4 bg-gradient-to-br from-soraki-surface to-soraki-card border-soraki-primaryLight/30">
         <div className="flex justify-between items-start z-10 relative">
             <div>
-                <h2 className="text-3xl font-bold text-soraki-primaryDark mb-1 leading-tight">{greeting},<br/>{userProfile.name}!</h2>
+                <h2 className="text-3xl font-bold text-soraki-primaryDark mb-1 leading-tight">{t(greetingKey)},<br/>{userProfile.name}!</h2>
                 <div className="flex items-center gap-2 text-soraki-textLight text-sm mt-2 bg-soraki-card/50 py-1 px-3 rounded-full w-fit">
                     <Calendar size={14} />
                     <span className="capitalize">{dateString}</span>
@@ -61,7 +63,7 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
       <Card className="flex items-center gap-4 py-4 border-l-4 border-l-soraki-primary">
         <MascotPlaceholder size="sm" mood="happy" className="!w-12 !h-12" />
         <p className="text-soraki-text font-medium text-sm leading-snug">
-          "Estudar um pouco todo dia é melhor do que muito de uma vez só." 🌿
+          {t('encouragement')} 🌿
         </p>
       </Card>
 
@@ -72,11 +74,11 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
              <div className="bg-orange-50 dark:bg-orange-900/20 p-2 rounded-full">
                 <Flame className="text-orange-400 fill-orange-400 w-6 h-6" />
              </div>
-             <span className="text-sm text-soraki-text font-semibold">Sequência atual</span>
+             <span className="text-sm text-soraki-text font-semibold">{t('currentStreak')}</span>
           </div>
           <div className="text-right">
              <span className="text-2xl text-orange-500 font-bold block leading-none">{streak}</span>
-             <span className="text-xs text-orange-300">dias seguidos</span>
+             <span className="text-xs text-orange-300">{t('daysInARow')}</span>
           </div>
         </Card>
       </div>
@@ -88,14 +90,14 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
                 <div className="bg-soraki-primaryLight p-2 rounded-xl text-soraki-primaryDark">
                     <CheckCircle2 size={20} />
                 </div>
-                <h3 className="font-bold text-soraki-primaryDark text-lg">Resumo de hoje</h3>
+                <h3 className="font-bold text-soraki-primaryDark text-lg">{t('todaysSummary')}</h3>
             </div>
             <ArrowRight size={18} className="text-soraki-primary/60" />
         </div>
         
         <div className="relative pt-2 pb-2">
             <div className="flex justify-between text-xs text-soraki-textLight mb-2">
-              <span>Progresso diário</span>
+              <span>{t('dailyProgress')}</span>
               <span>{progress}%</span>
             </div>
             <div className="w-full bg-soraki-neutral/50 rounded-full h-3 mb-1 overflow-hidden">
@@ -106,8 +108,8 @@ const Home: React.FC<HomeProps> = ({ userProfile }) => {
             </div>
             <p className="text-xs text-center text-soraki-textLight mt-2">
                 {total === 0 
-                    ? "Nenhuma tarefa para hoje ainda" 
-                    : `${completed} de ${total} tarefas concluídas`
+                    ? t('noTasksForToday')
+                    : t('tasksCompleted', { completed, total })
                 }
             </p>
         </div>

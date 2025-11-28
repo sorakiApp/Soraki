@@ -1,18 +1,20 @@
 import React from 'react';
 import { Home, BookOpen, Clock, RotateCcw, ShoppingBag, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const navItems = [
-    { path: '/', icon: Home, label: 'Home' },
-    { path: '/planner', icon: BookOpen, label: 'Planner' },
-    { path: '/focus', icon: Clock, label: 'Foco' },
-    { path: '/reviews', icon: RotateCcw, label: 'Revisões' },
-    { path: '/shop', icon: ShoppingBag, label: 'Loja' },
-    { path: '/profile', icon: User, label: 'Perfil' },
+    { path: '/', icon: Home, label: t('nav.home') },
+    { path: '/planner', icon: BookOpen, label: t('nav.planner') },
+    { path: '/focus', icon: Clock, label: t('nav.focus') },
+    { path: '/reviews', icon: RotateCcw, label: t('nav.reviews') },
+    { path: '/shop', icon: ShoppingBag, label: t('nav.shop') },
+    { path: '/profile', icon: User, label: t('nav.profile') },
   ];
 
   return (

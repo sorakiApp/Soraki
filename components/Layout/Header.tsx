@@ -2,6 +2,7 @@
 import React from 'react';
 import UserAvatar from '../UI/UserAvatar';
 import { useData } from '../../contexts/dataContext';
+import LanguageSwitcher from '../UI/LanguageSwitcher';
 
 const Header: React.FC = () => {
   const { userProfile } = useData();
@@ -22,6 +23,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
+      <LanguageSwitcher />
     </div>
   );
 };

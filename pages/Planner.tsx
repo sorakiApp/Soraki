@@ -4,8 +4,10 @@ import { Plus, Check, Tag, Trash2, Circle, CheckCircle2, Zap } from 'lucide-reac
 import { Priority } from '../types';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
 import { useData } from '../contexts/dataContext';
+import { useTranslation } from 'react-i18next';
 
 const Planner: React.FC = () => {
+  const { t } = useTranslation();
   const { tasks, streak, addTask, toggleTask, deleteTask, addSubtask, toggleSubtask } = useData();
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [selectedSection, setSelectedSection] = useState('Estudo');
@@ -24,11 +26,11 @@ const Planner: React.FC = () => {
       deleteTask(id);
   }
 
-  const sections = ['Estudo', 'Faculdade', 'Vida pessoal', 'Saúde', 'Projetos'];
+  const sections = [t('planner.sections.study'), t('planner.sections.college'), t('planner.sections.personalLife'), t('planner.sections.health'), t('planner.sections.projects')];
   const priorities: { id: Priority; label: string; icon: string; }[] = [
-    { id: 'leve', label: 'Leve', icon: '🌱' },
-    { id: 'medio', label: 'Médio', icon: '🌿' },
-    { id: 'profundo', label: 'Profundo', icon: '🌳' },
+    { id: 'leve', label: t('planner.priorities.light'), icon: '🌱' },
+    { id: 'medio', label: t('planner.priorities.medium'), icon: '🌿' },
+    { id: 'profundo', label: t('planner.priorities.deep'), icon: '🌳' },
   ];
   
   const getPriorityClass = (priority: Priority) => {
@@ -53,21 +55,21 @@ const Planner: React.FC = () => {
     <div className="flex flex-col h-full pb-24 animate-fade-in">
       <div className="flex justify-between items-center mb-6">
         <div>
-            <h2 className="text-3xl font-bold text-soraki-primaryDark">Planner</h2>
-            <p className="text-soraki-textLight text-sm">plante as sementes do seu dia 🌱</p>
+            <h2 className="text-3xl font-bold text-soraki-primaryDark">{t('planner.title')}</h2>
+            <p className="text-soraki-textLight text-sm">{t('planner.subtitle')} 🌱</p>
         </div>
         <div className='flex items-center gap-4'>
             {streak > 0 && (
                 <div className="flex items-center gap-2 bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-bold">
                     <Zap size={14} />
-                    <span>{streak} dia{streak > 1 ? 's' : ''} de constância</span>
+                    <span>{t('planner.streak', { count: streak })}</span>
                 </div>
             )}
             <button 
                 onClick={() => setIsAdding(!isAdding)}
                 className={`px-4 py-2 rounded-2xl text-sm font-bold shadow-soft transition-all flex items-center gap-1 ${isAdding ? 'bg-soraki-neutral text-soraki-textLight' : 'bg-soraki-primary text-white hover:bg-soraki-primaryDark'}`}
             >
-                <Plus size={18} /> {isAdding ? 'Cancelar' : 'Nova'}
+                <Plus size={18} /> {isAdding ? t('planner.cancel') : t('planner.new')}
             </button>
         </div>
       </div>
@@ -81,12 +83,12 @@ const Planner: React.FC = () => {
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
-                    placeholder="Ex: Estudar capítulo 3 de biologia..."
+                    placeholder={t('planner.placeholder')}
                     className="w-full p-3 mb-3 rounded-xl bg-soraki-bg border-none focus:ring-2 focus:ring-soraki-primary/50 text-white-800 placeholder-gray-500"
                 />
                 <div className='flex justify-between items-center mb-4'>
                     <div className="flex gap-2 items-center flex-wrap">
-                        <span className="text-sm font-semibold text-gray-600 mr-2">Prioridade:</span>
+                        <span className="text-sm font-semibold text-gray-600 mr-2">{t('planner.priority')}:</span>
                         {priorities.map(p => (
                             <button
                                 key={p.id}
@@ -103,7 +105,7 @@ const Planner: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4 items-center flex-wrap">
-                     <span className="text-sm font-semibold text-gray-600 mr-2 whitespace-nowrap mt-1">Seção:</span>
+                     <span className="text-sm font-semibold text-gray-600 mr-2 whitespace-nowrap mt-1">{t('planner.section')}:</span>
                     {sections.map(sec => (
                         <button
                             key={sec}
@@ -120,7 +122,7 @@ const Planner: React.FC = () => {
                 </div>
                 <div className="flex justify-end mt-3">
                     <button onClick={handleAddTask} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl text-sm font-bold">
-                        Adicionar Tarefa
+                        {t('planner.addTask')}
                     </button>
                 </div>
             </div>
@@ -131,9 +133,9 @@ const Planner: React.FC = () => {
         {tasks.length === 0 && !isAdding ? (
              <div className="flex flex-col items-center justify-center mt-12 opacity-70">
                 <MascotPlaceholder size="md" mood="happy" className="mb-4" />
-                <p className="text-soraki-primaryDark font-bold mb-2">Tudo limpo por aqui!</p>
+                <p className="text-soraki-primaryDark font-bold mb-2">{t('planner.allClean')}</p>
                 <p className="text-sm text-soraki-textLight text-center max-w-[200px]">
-                    Adicione as tarefas de hoje para liberarmos espaço na sua mente. ☁️
+                    {t('planner.addTasksMessage')} ☁️
                 </p>
             </div>
         ) : (
@@ -199,7 +201,7 @@ const Planner: React.FC = () => {
                              <input
                                 name="subtaskTitle"
                                 type="text"
-                                placeholder="Adicionar microtarefa..."
+                                placeholder={t('planner.addSubtaskPlaceholder')}
                                 className="w-full text-sm bg-transparent border-t-0 border-x-0 border-b border-dashed border-gray-300/50 focus:ring-0 focus:border-soraki-primary/50 placeholder-gray-500 py-1 pl-0 text-gray-700"
                             />
                         </form>
