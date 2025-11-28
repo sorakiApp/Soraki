@@ -4,6 +4,7 @@ import { UserProfile } from '../../types';
 import { ArrowRight, Upload, Check, Smartphone } from 'lucide-react';
 import MascotPlaceholder from '../UI/MascotPlaceholder';
 import { useData } from '../../contexts/dataContext';
+import LanguageSwitcher from '../UI/LanguageSwitcher';
 
 const Onboarding: React.FC = () => {
   const { updateUserProfile } = useData();
@@ -76,6 +77,10 @@ const Onboarding: React.FC = () => {
               >
                 Continuar <ArrowRight size={20} />
               </button>
+
+              <div className="mt-8">
+                <LanguageSwitcher />
+              </div>
             </div>
           )}
 
