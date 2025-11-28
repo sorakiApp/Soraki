@@ -7,11 +7,13 @@ import { useData } from '../contexts/dataContext';
 import Flashcard from '../components/Flashcard';
 import { AnimatePresence, motion } from 'framer-motion';
 import Card from '../components/UI/Card';
+import { useTranslation } from 'react-i18next';
 
 // Constantes do Algoritmo SRS
 const MIN_EASE = 1.3;
 
 const Reviews: React.FC = () => {
+  const { t } = useTranslation();
   const { reviews, addReview: addReviewContext, deleteReview: deleteReviewContext, updateReview } = useData();
   const [isAdding, setIsAdding] = useState(false);
   const [newFront, setNewFront] = useState('');
@@ -95,8 +97,8 @@ const Reviews: React.FC = () => {
     updateReview(currentCard.id, updatedReview);
 
     const getNextReviewMessage = (interval: number) => {
-      if (interval <= 1) return "Ele estará de volta para revisão amanhã. Bom trabalho!";
-      return `Nos vemos de novo em ${interval} dias. Continue assim!`;
+      if (interval <= 1) return t('reviews.feedback.tomorrow');
+      return t('reviews.feedback.days', { count: interval });
     }
 
     setFeedbackInfo({ message: getNextReviewMessage(newInterval) });
@@ -106,12 +108,12 @@ const Reviews: React.FC = () => {
   const FeedbackScreen = ({ message, onContinue }: { message: string, onContinue: () => void }) => (
     <div className="flex flex-col items-center justify-center text-center p-8 h-full animate-fade-in">
       <MascotPlaceholder mood="happy" size="lg" className="mb-6" />
-      <h2 className="text-2xl font-bold text-soraki-primaryDark">Revisão Registrada!</h2>
+      <h2 className="text-2xl font-bold text-soraki-primaryDark">{t('reviews.feedback.title')}</h2>
       <p className="text-soraki-textLight mt-2 mb-6 max-w-sm">{message}</p>
       <button 
         onClick={onContinue} 
         className="bg-soraki-primary text-white px-8 py-3 rounded-xl font-bold shadow-soft transition-transform hover:scale-105">
-        Continuar
+        {t('reviews.feedback.continue')}
       </button>
     </div>
   );
@@ -119,12 +121,12 @@ const Reviews: React.FC = () => {
   const SessionEndScreen = () => (
     <div className="flex flex-col items-center justify-center text-center p-8">
       <MascotPlaceholder mood="celebrate" size="lg" className="mb-6" />
-      <h2 className="text-2xl font-bold text-soraki-primaryDark">Parabéns!</h2>
-      <p className="text-soraki-textLight mt-2 mb-6">Você concluiu sua sessão de revisão de hoje.</p>
+      <h2 className="text-2xl font-bold text-soraki-primaryDark">{t('reviews.sessionEnd.title')}</h2>
+      <p className="text-soraki-textLight mt-2 mb-6">{t('reviews.sessionEnd.body')}</p>
       <button 
         onClick={() => setSessionInProgress(false)} 
         className="bg-soraki-primary text-white px-8 py-3 rounded-xl font-bold shadow-soft transition-transform hover:scale-105">
-        Voltar
+        {t('reviews.sessionEnd.back')}
       </button>
     </div>
   );
@@ -138,7 +140,7 @@ const Reviews: React.FC = () => {
             <>
               <div className='flex justify-between items-center px-4 pt-4'>
                 <p className="text-sm font-semibold text-soraki-textLight">
-                  Card {currentCardIndex + 1} de {reviewQueue.length}
+                  {t('reviews.cardProgress', { current: currentCardIndex + 1, total: reviewQueue.length })}
                 </p>
                 <button onClick={() => { setSessionInProgress(false); setFeedbackInfo(null); }} className="text-soraki-textLight hover:text-soraki-text">
                   <X size={20} />
@@ -157,14 +159,14 @@ const Reviews: React.FC = () => {
     <div className="flex flex-col h-full animate-fade-in pb-24">
        <div className="flex justify-between items-center mb-6">
         <div>
-            <h2 className="text-3xl font-bold text-soraki-primaryDark">Revisões</h2>
-            <p className="text-soraki-textLight text-sm">cultive sua memória 🧠</p>
+            <h2 className="text-3xl font-bold text-soraki-primaryDark">{t('reviews.title')}</h2>
+            <p className="text-soraki-textLight text-sm">{t('reviews.subtitle')}</p>
         </div>
         <button 
             onClick={() => setIsAdding(!isAdding)}
             className="bg-soraki-secondary text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-soft transition-colors flex items-center gap-1 hover:bg-soraki-primaryDark"
         >
-            <Plus size={14} /> {isAdding ? 'Cancelar' : 'Novo Card'}
+            <Plus size={14} /> {isAdding ? t('reviews.cancel') : t('reviews.newCard')}
         </button>
       </div>
 
@@ -177,20 +179,20 @@ const Reviews: React.FC = () => {
             className="mb-4 bg-soraki-card rounded-2xl shadow-soft flex flex-col gap-3 p-4 overflow-hidden">
               <textarea
                 className="w-full bg-soraki-bg border border-soraki-neutral rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-soraki-primary/50"
-                placeholder="Frente (Pergunta ou Conceito)"
+                placeholder={t('reviews.frontPlaceholder')}
                 rows={2}
                 value={newFront}
                 onChange={e => setNewFront(e.target.value)}
               />
               <textarea
                 className="w-full bg-soraki-bg border border-soraki-neutral rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-soraki-primary/50"
-                placeholder="Verso (Resposta)"
+                placeholder={t('reviews.backPlaceholder')}
                 rows={3}
                 value={newBack}
                 onChange={e => setNewBack(e.target.value)}
               />
               <div className='flex justify-end'>
-                <button onClick={handleAddReview} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl font-bold text-sm">Adicionar Card</button>
+                <button onClick={handleAddReview} className="bg-soraki-primaryDark text-white px-6 py-2 rounded-xl font-bold text-sm">{t('reviews.addCard')}</button>
               </div>
           </motion.div>
         )}
@@ -203,11 +205,11 @@ const Reviews: React.FC = () => {
                 <BrainCircuit size={32} className="text-indigo-500" />
             </div>
             <div>
-                <h3 className="font-bold text-soraki-primaryDark text-lg">Sessão de Revisão</h3>
+                <h3 className="font-bold text-soraki-primaryDark text-lg">{t('reviews.session.title')}</h3>
                 <p className="text-sm text-soraki-textLight">
                     {reviewQueue.length > 0 
-                        ? `Você tem ${reviewQueue.length} card${reviewQueue.length > 1 ? 's' : ''} para revisar.`
-                        : 'Nenhum card para revisar hoje. Bom descanso!'}
+                        ? t('reviews.session.cardsToDo', { count: reviewQueue.length })
+                        : t('reviews.session.noCardsToDo')}
                 </p>
             </div>
         </div>
@@ -216,14 +218,14 @@ const Reviews: React.FC = () => {
             disabled={reviewQueue.length === 0}
             className="mt-4 w-full bg-soraki-primary text-white font-bold py-3 rounded-lg disabled:bg-soraki-neutral/50 disabled:cursor-not-allowed transition-all hover:bg-soraki-primaryDark"
         >
-            Iniciar Revisão
+            {t('reviews.session.start')}
         </button>
       </Card>
       
 
       {reviews.length > 0 ? (
         <div className='mt-4'>
-            <h4 className="text-soraki-primaryDark font-bold mb-3">Todos os Cards</h4>
+            <h4 className="text-soraki-primaryDark font-bold mb-3">{t('reviews.allCards')}</h4>
             <div className="space-y-2">
                 {reviews.map(review => (
                   <div key={review.id} className='bg-soraki-card/50 p-3 rounded-lg flex justify-between items-center text-sm'>
@@ -241,8 +243,8 @@ const Reviews: React.FC = () => {
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60 mt-8">
             <MascotPlaceholder mood="sleep" size="sm" className="mb-4 opacity-80" />
-            <p className="text-soraki-text font-medium mb-2">Nenhum card de revisão.</p>
-            <p className="text-xs text-soraki-textLight max-w-[200px]">Crie seu primeiro flashcard para começar a memorizar.</p>
+            <p className="text-soraki-text font-medium mb-2">{t('reviews.noCards')}</p>
+            <p className="text-xs text-soraki-textLight max-w-[200px]">{t('reviews.noCardsMessage')}</p>
         </div>
       )}
     </div>

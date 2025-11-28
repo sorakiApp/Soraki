@@ -4,17 +4,19 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 import MascotPlaceholder from '../components/UI/MascotPlaceholder';
 import { UserProfile } from '../types';
 import { useData } from '../contexts/dataContext';
+import { useTranslation } from 'react-i18next';
 
 interface FocusProps {
     userProfile: UserProfile;
 }
 
 const Focus: React.FC<FocusProps> = ({ userProfile }) => {
+  const { t } = useTranslation();
   const { addFocusSession } = useData();
   const [isActive, setIsActive] = useState(false);
   const [duration, setDuration] = useState(25); // minutes
   const [timeLeft, setTimeLeft] = useState(25 * 60);
-  const [subject, setSubject] = useState('Geral');
+  const [subject, setSubject] = useState(t('focus.subject.general'));
   const [sessionCompleted, setSessionCompleted] = useState(false);
 
   // SVG Circle Logic
@@ -36,11 +38,11 @@ const Focus: React.FC<FocusProps> = ({ userProfile }) => {
   }, [duration, resetTimer]);
 
   // Finish Logic
-  const handleFinish = () => {
+  const handleFinish = useCallback(() => {
     setIsActive(false);
     setSessionCompleted(true);
     addFocusSession(duration);
-  };
+  }, [addFocusSession, duration]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -61,19 +63,19 @@ const Focus: React.FC<FocusProps> = ({ userProfile }) => {
   return (
     <div className="flex flex-col items-center animate-fade-in pb-24 w-full">
       <div className="text-center mt-4 mb-8">
-         <h2 className="text-2xl font-bold text-soraki-primaryDark">Sessão de Foco</h2>
-         <p className="text-soraki-textLight text-sm">sem pressa, no seu ritmo 🍃</p>
+         <h2 className="text-2xl font-bold text-soraki-primaryDark">{t('focus.title')}</h2>
+         <p className="text-soraki-textLight text-sm">{t('focus.subtitle')}</p>
       </div>
 
       {sessionCompleted && (
           <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-2xl text-center animate-fade-in shadow-soft">
-              <p className="font-bold text-lg">Parabéns, {userProfile.name}! 🎉</p>
-              <p className="text-sm">Você completou {duration} minutos.</p>
+              <p className="font-bold text-lg">{t('focus.completed.title', { name: userProfile.name })}</p>
+              <p className="text-sm">{t('focus.completed.body', { duration })}</p>
               <button 
                 onClick={resetTimer}
                 className="mt-3 bg-green-600 text-white px-4 py-1 rounded-full text-xs font-bold"
               >
-                Nova Sessão
+                {t('focus.completed.new')}
               </button>
           </div>
       )}
@@ -115,7 +117,7 @@ const Focus: React.FC<FocusProps> = ({ userProfile }) => {
                 {formatTime(timeLeft)}
             </div>
             <div className="text-soraki-textLight text-sm mt-1 font-medium bg-soraki-card/80 px-3 py-1 rounded-full border border-soraki-neutral">
-                {isActive ? 'Focando em ' + subject : 'Pronto para começar?'}
+                {isActive ? t('focus.status.focusing', { subject }) : t('focus.status.ready')}
             </div>
          </div>
       </div>
@@ -131,7 +133,7 @@ const Focus: React.FC<FocusProps> = ({ userProfile }) => {
                             onChange={(e) => setDuration(Number(e.target.value))}
                             className="appearance-none bg-soraki-card border border-soraki-primaryLight pl-4 pr-8 py-2 rounded-xl text-soraki-text text-sm font-bold focus:outline-none shadow-sm"
                         >
-                            <option value={5}>5 min (Teste)</option>
+                            <option value={5}>{`5 min (${t('focus.duration.test')})`}</option>
                             <option value={15}>15 min</option>
                             <option value={25}>25 min</option>
                             <option value={45}>45 min</option>
@@ -146,10 +148,10 @@ const Focus: React.FC<FocusProps> = ({ userProfile }) => {
                             onChange={(e) => setSubject(e.target.value)}
                             className="appearance-none bg-soraki-card border border-soraki-primaryLight pl-4 pr-8 py-2 rounded-xl text-soraki-text text-sm font-bold focus:outline-none shadow-sm"
                         >
-                            <option>Geral</option>
-                            <option>Matemática</option>
-                            <option>História</option>
-                            <option>Leitura</option>
+                            <option>{t('focus.subject.general')}</option>
+                            <option>{t('focus.subject.math')}</option>
+                            <option>{t('focus.subject.history')}</option>
+                            <option>{t('focus.subject.reading')}</option>
                         </select>
                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-soraki-primaryDark">▼</div>
                     </div>

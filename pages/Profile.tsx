@@ -5,6 +5,7 @@ import { Edit2, Flame, Clock, Activity, Moon, Sun, Download, Upload, AlertCircle
 import UserAvatar from '../components/UI/UserAvatar';
 import { useData } from '../contexts/dataContext';
 import LanguageSwitcher from '../components/UI/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileProps {
   isDarkMode?: boolean;
@@ -13,13 +14,14 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }) => {
+  const { t } = useTranslation();
   const { userProfile, stats, updateUserProfile } = useData();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   if (!userProfile) {
-      return <div>Carregando perfil...</div>; // Ou um placeholder melhor
+      return <div>{t('profile.loading')}</div>; // Ou um placeholder melhor
   }
 
   const handleAvatarUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +65,7 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
 
     } catch (error) {
         console.error("Export failed:", error);
-        alert("Erro ao gerar backup. Tente novamente.");
+        alert(t('profile.backup.error'));
     }
   };
 
@@ -77,7 +79,7 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
             const content = e.target?.result as string;
             const parsed = JSON.parse(content);
 
-            if (!parsed.data) throw new Error("Formato inválido");
+            if (!parsed.data) throw new Error(t('profile.backup.invalidFormat'));
 
             if (parsed.data.stats) localStorage.setItem('soraki-stats', parsed.data.stats);
             if (parsed.data.settings) localStorage.setItem('soraki-settings', parsed.data.settings);
@@ -119,7 +121,7 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
             
             <h2 className="text-2xl font-light text-soraki-primaryDark mt-4">{userProfile.name}</h2>
             <div className="text-soraki-textLight text-sm flex flex-col items-center">
-                <span>{userProfile.age} anos • {userProfile.studyGoal}</span>
+                <span>{t('profile.yearsOld', { age: userProfile.age })} • {userProfile.studyGoal}</span>
             </div>
         </div>
 
@@ -129,19 +131,19 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
                 <Flame className="text-orange-500 fill-orange-500 mb-2 w-6 h-6" />
                 <div className="bg-orange-50 dark:bg-orange-900/20 px-3 py-0.5 rounded-full mb-1 border border-orange-100 dark:border-orange-900/30">
                     <span className="text-orange-500 font-bold text-sm">{stats.streak}</span>
-                    <span className="text-[10px] text-orange-400 ml-1">dias</span>
+                    <span className="text-[10px] text-orange-400 ml-1">{t('profile.stats.days')}</span>
                 </div>
-                <span className="text-[10px] text-soraki-textLight">Sequência</span>
+                <span className="text-[10px] text-soraki-textLight">{t('profile.stats.streak')}</span>
             </Card>
             <Card className="flex flex-col items-center justify-center py-6">
                 <Clock className="text-soraki-text mb-2 w-6 h-6" />
                 <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.totalHours.toFixed(1)}h</span>
-                <span className="text-[10px] text-soraki-textLight">Horas</span>
+                <span className="text-[10px] text-soraki-textLight">{t('profile.stats.hours')}</span>
             </Card>
              <Card className="flex flex-col items-center justify-center py-6">
                 <Activity className="text-soraki-text mb-2 w-6 h-6" />
                 <span className="text-soraki-primaryDark font-bold text-lg mb-1">{stats.sessions}</span>
-                <span className="text-[10px] text-soraki-textLight">Sessões</span>
+                <span className="text-[10px] text-soraki-textLight">{t('profile.stats.sessions')}</span>
             </Card>
         </div>
 
@@ -149,7 +151,7 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
         <Card className="mb-6 space-y-4" padding="p-6">
              {/* Language Switcher */}
              <div className="flex items-center justify-between border-b border-soraki-neutral pb-4">
-                <h3 className="font-bold text-sm text-soraki-primaryDark">Idioma</h3>
+                <h3 className="font-bold text-sm text-soraki-primaryDark">{t('profile.settings.language')}</h3>
                 <LanguageSwitcher />
              </div>
 
@@ -161,8 +163,8 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
                         {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
                       </div>
                       <div>
-                        <h3 className="font-bold text-sm">Modo {isDarkMode ? 'Noturno' : 'Claro'}</h3>
-                        <p className="text-[10px] text-soraki-textLight">Ajuste a aparência do app</p>
+                        <h3 className="font-bold text-sm">{isDarkMode ? t('profile.settings.theme.dark') : t('profile.settings.theme.light')}</h3>
+                        <p className="text-[10px] text-soraki-textLight">{t('profile.settings.theme.description')}</p>
                       </div>
                   </div>
                   <button 
@@ -176,14 +178,14 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
 
              {/* Backup Section */}
              <div className="pt-2">
-                <h3 className="font-bold text-sm text-soraki-primaryDark mb-3">Backup e Dados</h3>
+                <h3 className="font-bold text-sm text-soraki-primaryDark mb-3">{t('profile.backup.title')}</h3>
                 <div className="flex gap-3">
                     <button 
                         onClick={handleExportBackup}
                         className="flex-1 bg-soraki-surface border border-soraki-neutral py-3 rounded-xl flex flex-col items-center justify-center gap-1 text-soraki-text hover:bg-soraki-neutral/20 transition-colors"
                     >
                         <Download size={20} />
-                        <span className="text-xs font-bold">Exportar</span>
+                        <span className="text-xs font-bold">{t('profile.backup.export')}</span>
                     </button>
                     
                     <button 
@@ -198,8 +200,8 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
                          importStatus === 'error' ? <AlertCircle size={20} /> : 
                          <Upload size={20} />}
                         <span className="text-xs font-bold">
-                            {importStatus === 'success' ? 'Sucesso!' : 
-                             importStatus === 'error' ? 'Erro' : 'Restaurar'}
+                            {importStatus === 'success' ? t('profile.backup.import.success') : 
+                             importStatus === 'error' ? t('profile.backup.import.error') : t('profile.backup.import')}
                         </span>
                     </button>
                     <input 
@@ -212,7 +214,7 @@ const Profile: React.FC<ProfileProps> = ({ isDarkMode, toggleTheme, refreshApp }
                     />
                 </div>
                 <p className="text-[10px] text-soraki-textLight mt-2 text-center">
-                    Salve seu progresso em um arquivo seguro.
+                    {t('profile.backup.description')}
                 </p>
              </div>
         </Card>

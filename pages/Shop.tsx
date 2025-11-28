@@ -1,17 +1,20 @@
 
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Shop: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6 animate-fade-in pb-24 h-full justify-center">
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-soraki-primaryDark">Loja</h2>
+        <h2 className="text-3xl font-bold text-soraki-primaryDark">{t('shop.title')}</h2>
         <div className="text-soraki-textLight text-sm mt-4 max-w-sm mx-auto flex flex-col gap-4">
-            <p>🌤 Apoie o projeto e leve um pedacinho da Soraki com você</p>
-            <p>Cada produto da lojinha ajuda a manter o app vivo, gentil e sempre evoluindo.<br/>Se você acredita na proposta de estudar com leveza, constância e calma… essa é a melhor forma de apoiar.</p>
-            <p>🛍 Visite nossa lojinha e dê um boost no Soraki<br/>(Com amor e um pouquinho de fofura sempre 💛)</p>
+            <p>{t('shop.support')}</p>
+            <p>{t('shop.description')}</p>
+            <p>{t('shop.visit')}</p>
         </div>
       </div>
 
@@ -22,18 +25,18 @@ const Shop: React.FC = () => {
       >
         <div className="relative z-10 flex flex-col items-center text-center gap-4">
              <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold inline-block text-white uppercase tracking-widest">
-                 LOJA EXTERNA
+                 {t('shop.external.label')}
              </div>
              
              <div>
-                 <h3 className="font-bold text-2xl mb-2">Materiais Premium</h3>
+                 <h3 className="font-bold text-2xl mb-2">{t('shop.external.title')}</h3>
                  <p className="text-indigo-100 text-sm max-w-[260px] mx-auto leading-relaxed">
-                    Acesse planners digitais completos, e-books de estudo e adesivos exclusivos na nossa loja oficial.
+                    {t('shop.external.description')}
                  </p>
              </div>
 
              <div className="mt-4 bg-white text-indigo-600 px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2">
-                <span>Visitar Loja</span>
+                <span>{t('shop.external.button')}</span>
                 <ExternalLink size={18} />
              </div>
         </div>
