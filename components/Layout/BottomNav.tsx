@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, Clock, RotateCcw, ShoppingBag, User } from 'lucide-react';
+import { Home, BookOpen, Clock, RotateCcw, ShoppingBag, User, HandHeartIcon } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +13,7 @@ const BottomNav: React.FC = () => {
     { path: '/planner', icon: BookOpen, label: t('nav.planner') },
     { path: '/focus', icon: Clock, label: t('nav.focus') },
     { path: '/reviews', icon: RotateCcw, label: t('nav.reviews') },
-    { path: '/shop', icon: ShoppingBag, label: t('nav.shop') },
+    { path: '/shop', icon: HandHeartIcon, label: t('nav.shop') },
     { path: '/profile', icon: User, label: t('nav.profile') },
   ];
 
